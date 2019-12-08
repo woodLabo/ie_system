@@ -14,7 +14,9 @@ $itemArray = array(
 );
 ?>
 <p>エクスポートする項目を選択してください</p>
-<form action="" method="post" class="admin-export-form">
+<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" method="post" class="admin-export-form">
+	<input type="hidden" name="action" value="export">
+
 <?php foreach($itemArray as $key => $value) {
 	if ($key === "商品名" || $key === '品番') {
 ?>

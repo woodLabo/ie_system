@@ -1,0 +1,8 @@
+.admin-export-form label {
+  vertical-align: baseline;
+}
+
+.admin-export-form .btn-export {
+  display: block;
+  margin-top: 10px;
+}

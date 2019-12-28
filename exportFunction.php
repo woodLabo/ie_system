@@ -1,20 +1,23 @@
 <?php
+// メインqueryのファイルを読み込み
+include_once(dirname(__file__) . '/action/export.php');
+
 // チェックボックスのリストを作成
 $itemArray = array(
-	'商品名' => 'item',
-	'上代' => 'hoge',
-	'品番' => 'num',
-	'カートン入数' => 'cart',
-	'商品サイズ' => 'size',
-	'重量' => 'weigth',
-	'材質' => 'parts',
-	'パッケージ' => 'pack',
-	'パッケージサイズ' => 'psize',
-	'製品情報' => 'detail'
+	'商品名' => '商品名',
+	'品番' => '品番',
+	'上代' => '上代',
+	'カートン入数' => '入数',
+	'商品サイズ' => '本体サイズ',
+	'重量' => '重量',
+	'材質' => '材質',
+	'パッケージ' => 'パッケージ',
+	'パッケージサイズ' => 'パッケージサイズ',
+	'製品情報' => '製品情報'
 );
 ?>
 <p>エクスポートする項目を選択してください</p>
-<form action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" method="post" class="admin-export-form">
+<form action="<?php echo str_replace( '%7e', '~', $_server['request_uri']); ?>" method="post" class="admin-export-form">
 	<input type="hidden" name="action" value="export">
 
 <?php foreach($itemArray as $key => $value) {
@@ -33,6 +36,12 @@ $itemArray = array(
 </form>
 
 <?php
-// メインのアクションを作成
+
+// exportAction
+if( $_POST['action'] === "export" ) {
+	$exportQuery = new Export($itemArray);
+	$exportQuery->arraySet();
+	$exportQuery->GetterPostDate();
+}
 
 ?>

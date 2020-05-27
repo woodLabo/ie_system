@@ -1,16 +1,18 @@
- <?php
+<?php
+include_once("itemRegistration.php");
 
-class Export {
+class Export extends ItemRegistration {
 	// const
 	const ITEM_NAME = '商品名';
 	const ITEM_NO = '品番';
 
 	// @construct
 	public function __construct($itemArray) {
+		parent::__construct();
+
 		include_once(dirname(__file__) . '/../Classess/PHPExcel.php');
 		include_once(dirname(__file__) . '/../Classess/PHPExcel/IOFactory.php');
 
-		$this->db = $GLOBALS['wpdb'];
 		$this->itemArray = $itemArray;
 		$this->itemValue = array();
 		$this->itemKey = array(self::ITEM_NAME, self::ITEM_NO);
@@ -60,9 +62,13 @@ class Export {
 			$itemDetaArray = array_merge($itemDetaArray, array($numArea => $this->getterItemDetails($results->ID, self::ITEM_NO)));
 			for($i = 0; $i < count($this->itemValue); $i++) {
 				$itemDetails = $this->alphaAscii(($deitalCell + $i)) . $rowIndex;
-				$itemDetaArray = array_merge($itemDetaArray, array($itemDetails => $this->getterItemDetails($results->ID, $this->itemValue[$i])));
+				if ($this->itemValue[$i] !== "manufacturer") {
+					$itemDetaArray = array_merge($itemDetaArray, array($itemDetails => $this->getterItemDetails($results->ID, $this->itemValue[$i])));
+				} else {
+					// メーカー取得
+					$itemDetaArray = array_merge($itemDetaArray, array($itemDetails => parent::manufacturerItems($results->ID)));
+				}
 			}
-			echo "<br>";
 			$rowIndex++;
 		}
 		$this->turnOnDataExcel($itemDetaArray);
@@ -70,7 +76,7 @@ class Export {
 
 	// @method
 	// @desc カスタムフィールドで設定している値を取得
-	// param {number} $items_id - 商品のID
+	// param {int} $items_id - 商品のID
 	// params {string} $get_value - 取得するmeta_key
 	private function getterItemDetails($items_id, $get_value) {
 		$result = $this->db->get_results($this->db->prepare(
@@ -83,7 +89,7 @@ class Export {
 
 	// @method
 	// @desc アルファベットをインクリメントでカウントアップさせる
-	// @param {number} $call - イテレートのインデックス
+	// @param {int} $call - イテレートのインデックス
 	private function alphaAscii($cell) {
 		return chr(65 + $cell);
 	}
